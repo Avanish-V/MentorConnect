@@ -1,6 +1,7 @@
 package com.byteapps.mentorconnect.Screens.SearchFlow
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -20,6 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -70,9 +74,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import com.byteapps.mentorconnect.Features.CreateSchedule.TimeSlotModel
 import com.byteapps.mentorconnect.R
-import com.byteapps.mentorconnect.Screens.SingleExperience
 import com.byteapps.mentorconnect.Utils.Routes
 import com.byteapps.mentorconnect.ui.theme.AppTheme
 
@@ -82,12 +86,12 @@ import com.byteapps.mentorconnect.ui.theme.AppTheme
 fun MentorProfile(navHostController: NavHostController) {
 
     var state by remember { mutableIntStateOf(0) }
-    val titles = listOf("OverView", "Testimonials")
+    val titles = listOf("OverView","Services","Testimonials")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Book a session") },
+                title = { Text("Book a session", color = AppTheme.colorScheme.onTertiary) },
                 navigationIcon = {
                     IconButton(onClick = { navHostController.popBackStack() }) {
                         Icon(
@@ -103,8 +107,8 @@ fun MentorProfile(navHostController: NavHostController) {
 
             )
         },
-        containerColor = Color.White
-    ) {
+        containerColor = AppTheme.colorScheme.background
+    ) { it ->
 
         Surface(
             modifier = Modifier
@@ -112,6 +116,8 @@ fun MentorProfile(navHostController: NavHostController) {
                 .padding(it),
             color = AppTheme.colorScheme.background
         ) {
+
+
 
             LazyColumn(
                 contentPadding = PaddingValues(16.dp),
@@ -141,7 +147,10 @@ fun MentorProfile(navHostController: NavHostController) {
                                         containerColor = Color.Transparent
                                     )
                                 ) {
-                                    Box(modifier = Modifier.fillMaxSize().clip(CircleShape).padding(6.dp)) {
+                                    Box(modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape)
+                                        .padding(6.dp)) {
                                         Image(
                                             painter = painterResource(R.drawable.cat),
                                             contentDescription = null,
@@ -163,9 +172,12 @@ fun MentorProfile(navHostController: NavHostController) {
                                                 Icon(
                                                     imageVector = Icons.Default.Star,
                                                     contentDescription = null,
-                                                    tint = AppTheme.colorScheme.primary
+                                                    tint = AppTheme.colorScheme.secondary
                                                 )
-                                                Text("4.2/5")
+                                                Text(
+                                                    "4.2/5",
+                                                    color = AppTheme.colorScheme.onTertiary
+                                                )
                                             }
 
                                         }
@@ -176,11 +188,16 @@ fun MentorProfile(navHostController: NavHostController) {
                                             verticalArrangement = Arrangement.spacedBy(6.dp)
                                         ) {
 
-                                            Text(text = "20", fontWeight = FontWeight.Bold)
+                                            Text(
+                                                text = "20",
+                                                fontWeight = FontWeight.Bold,
+                                                color = AppTheme.colorScheme.onTertiary
+                                            )
 
                                             Text(
                                                 modifier = Modifier.padding(6.dp),
                                                 text = "Sessions",
+                                                color = AppTheme.colorScheme.onTertiary
 
                                             )
                                         }
@@ -192,139 +209,278 @@ fun MentorProfile(navHostController: NavHostController) {
                                 Text(
                                     text = "Avanish Kumar",
                                     fontWeight = FontWeight.Bold,
-                                    style = AppTheme.typography.titleLarge
-                                )
-                            }
-
-                        }
-
-
-                        PrimaryTabRow(
-                            selectedTabIndex = state,
-                            containerColor = Color.Transparent,
-                            indicator = {
-                                TabRowDefaults.PrimaryIndicator(
-                                    color = Color.Black,
-                                    width = 50.dp
-
-                                )
-                            }
-                        ) {
-                            titles.forEachIndexed { index, title ->
-                                Tab(
-                                    selected = state == index,
-                                    onClick = { state = index },
-                                    text = {
-                                        Text(
-                                            text = title,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    },
-                                    selectedContentColor = Color.Black,
-                                    unselectedContentColor = Color.LightGray
-                                )
-                            }
-                        }
-
-                    }
-                }
-
-                item {
-                    Row(
-                        modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = Color.LightGray,
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-
-                        Card(
-                            onClick = {},
-                            modifier = Modifier.size(42.dp)
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Image(
-                                    painter = painterResource(R.drawable.linkedin),
-                                    contentDescription = null
-                                )
-                            }
-                        }
-
-                        Card(
-                            onClick = {},
-                            modifier = Modifier.size(42.dp)
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Image(
-                                    painter = painterResource(R.drawable.instagram),
-                                    contentDescription = null
+                                    style = AppTheme.typography.titleLarge,
+                                    color = AppTheme.colorScheme.onTertiary
                                 )
                             }
 
                         }
                     }
-                }
-
-                item {
-
-                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-
-                            Column(Modifier.weight(1f)) {
-                                Text(text = "About", fontWeight = FontWeight.Bold)
-                                HorizontalDivider(
-                                    modifier = Modifier.width(30.dp),
-                                    thickness = 3.dp,
-                                    color = Color.Black
-                                )
-                            }
-
-
-                        }
-                        Text(
-                            "Building @Tayyari | Ex-Microsoft | 400k+ Subs on YT |\n" +
-                                    "NSIT"
-                        )
-                    }
-
                 }
 
                 stickyHeader {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                    ) {
-                        Text(text = "Products", style = AppTheme.typography.titleLarge)
-                    }
 
-                }
+                    PrimaryTabRow(
+                        selectedTabIndex = state,
+                        containerColor = AppTheme.colorScheme.background,
+                        indicator = {
+                            TabRowDefaults.PrimaryIndicator(
+                                modifier = Modifier. tabIndicatorOffset(state, matchContentSize = true),
+                                color = AppTheme.colorScheme.primary,
+                                width = 50.dp
 
-                item {
-                    LazyRow(
-                        contentPadding = PaddingValues(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(13.dp)
+                            )
+                        }
                     ) {
-                        items(5) {
-                            SuggestionChip(
-                                onClick = {},
-                                label = { Text("Resume", modifier = Modifier.padding(10.dp)) },
-                                border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                        titles.forEachIndexed { index, title ->
+                            Tab(
+                                selected = state == index,
+                                onClick = { state = index },
+                                text = {
+                                    Text(
+                                        text = title,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+
+                                    )
+                                },
+                                selectedContentColor = AppTheme.colorScheme.onTertiary,
+                                unselectedContentColor = AppTheme.colorScheme.onSecondary
                             )
                         }
                     }
                 }
 
-                items(4) {
-                    MentorshipCard(
-                        onBookClick = { navHostController.navigate(Routes.Main.CreateBooking.routes) }
+                item {
+
+                  
+                    val pagerState = rememberPagerState(initialPage = state, pageCount = {titles.size})
+
+                    state = pagerState.currentPage
+
+                    HorizontalPager(
+                        state = pagerState,
+                        pageSize = PageSize.Fill,
+                    ) {page->
+
+                        when(page){
+                            0->{
+                                AboutSection()
+                            }
+                            1->{
+                                ServiceProductSection(navHostController)
+                            }
+                            2->{
+                                TestimonialCard()
+                            }
+                        }
+                        
+                    }
+                    
+                }
+
+
+            }
+        }
+    }
+}
+
+@Composable
+fun AboutSection(modifier: Modifier = Modifier) {
+
+
+    Column (verticalArrangement = Arrangement.spacedBy(16.dp)){
+
+        Row(
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = Color.LightGray,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+
+            Card(
+                onClick = {},
+                modifier = Modifier.size(42.dp)
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Image(
+                        painter = painterResource(R.drawable.linkedin),
+                        contentDescription = null
+                    )
+                }
+            }
+
+            Card(
+                onClick = {},
+                modifier = Modifier.size(42.dp)
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Image(
+                        painter = painterResource(R.drawable.instagram),
+                        contentDescription = null
                     )
                 }
 
+            }
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = "About",
+                        fontWeight = FontWeight.Bold,
+                        color = AppTheme.colorScheme.onTertiary
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.width(30.dp),
+                        thickness = 3.dp,
+                        color = AppTheme.colorScheme.primary
+                    )
+                }
+
+
+            }
+            Text(
+                "Building @Tayyari | Ex-Microsoft | 400k+ Subs on YT |\n" +
+                        "NSIT",
+                color = AppTheme.colorScheme.onTertiary
+            )
+        }
+
+    }
+
+
+
+}
+
+@Composable
+fun ServiceProductSection(navHostController: NavHostController) {
+
+
+    Column (verticalArrangement = Arrangement.spacedBy(16.dp)){
+
+        LazyRow(
+            contentPadding = PaddingValues(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(13.dp)
+        ) {
+            items(5) {
+                SuggestionChip(
+                    onClick = {},
+                    label = { Text("Resume", modifier = Modifier.padding(10.dp), color = AppTheme.colorScheme.onTertiary) },
+                    border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                )
+            }
+        }
+
+        for (i in 1..10){
+            MentorshipCard(
+                onBookClick = { navHostController.navigate(Routes.Main.CreateBooking.routes) }
+            )
+
+        }
+
+    }
+
+
+}
+
+
+@Composable
+fun TestimonialsSection(modifier: Modifier = Modifier) {
+
+    for (i in 1..10){
+        TestimonialCard()
+    }
+
+
+}
+
+
+@Composable
+fun TestimonialCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            // Profile Section
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = "https://via.placeholder.com/48",
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column {
+                    Text(
+                        text = "Sarah Johnson",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = "Senior Software Engineer",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Rating
+            Row {
+                repeat(5) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Star Rating",
+                        tint = Color(0xFFFFB800),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Testimonial Text
+            Text(
+                text = "\"Working with my mentor has been transformative. Their guidance helped me advance my career and develop crucial leadership skills. The personalized approach made all the difference.\"",
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Session Info
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "12 sessions completed",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Mentoring since 2023",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -497,12 +653,13 @@ fun MentorshipCard(
 
             Text(
                 text = "Career guidance",
-                style = AppTheme.typography.titleMedium
+                style = AppTheme.typography.titleMedium,
+                color = AppTheme.colorScheme.onTertiary
             )
             Text(
                 text = "Get personalized guidance on career transitions, resume review, and interview preparation.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = AppTheme.colorScheme.onTertiary
             )
 
             Row(
@@ -528,12 +685,13 @@ fun MentorshipCard(
                     Text(
                         text = "₹1,499",
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        color = AppTheme.colorScheme.onTertiary
                     )
                     Text(
                         text = "/ session",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = AppTheme.colorScheme.onTertiary,
                         modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
                     )
                 }
@@ -564,13 +722,13 @@ private fun ServiceDetail(
             painter = painterResource(icon),
             contentDescription = null,
             modifier = Modifier.size(16.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint =  AppTheme.colorScheme.onTertiary
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = AppTheme.colorScheme.onTertiary
         )
     }
 }

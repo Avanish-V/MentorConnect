@@ -19,6 +19,11 @@ sealed class Routes(val routes:String){
         data object Bookings : Routes("BOOKINGS")
         data object Profile : Routes("Profile")
 
+        data object ServiceProduct:Routes("ServiceProduct"){
+            data object ServiceProductList:Routes("SERVICE_PRODUCT_LIST")
+            data object CreateServiceProduct:Routes("CREATE_SERVICE_PRODUCT")
+        }
+
 
         data object MentorDashboard : Routes("MENTOR_DASHBOARD"){
 
@@ -57,11 +62,11 @@ val drawerItemsList = listOf(
         route = Routes.Main.Bookings.routes,
         icon = R.drawable.users
     ),
-    NavigationDrawerRoute(
-        name = "Become Mentor",
-        route = Routes.Main.Bookings.routes,
-        icon = R.drawable.badge__1_
-    )
+//    NavigationDrawerRoute(
+//        name = "Become Mentor",
+//        route = Routes.Main.Bookings.routes,
+//        icon = R.drawable.badge__1_
+//    )
 
 )
 

@@ -27,7 +27,8 @@ data class AppColorScheme(
     val onPrimary:Color,
     val secondary:Color,
     val onSecondary:Color,
-    val tertiary:Color
+    val tertiary:Color,
+    val onTertiary:Color,
 )
 
 data class AppTypography(
@@ -49,7 +50,8 @@ val LocalAppColorScheme = staticCompositionLocalOf {
         onPrimary = Color.Unspecified,
         secondary = Color.Unspecified,
         onSecondary = Color.Unspecified,
-        tertiary = Color.Unspecified
+        tertiary = Color.Unspecified,
+        onTertiary = Color.Unspecified,
     )
 }
 
@@ -69,23 +71,25 @@ val LocalAppShape = staticCompositionLocalOf {
 }
 
 private val darkColorScheme = AppColorScheme(
-    background = Color.Black,
-    onBackground = Color.Gray,
-    primary = Color.White,
-    onPrimary = Color.White,
-    secondary = Color.White,
-    onSecondary = Color.Gray,
-    tertiary = Color.Black
+    background = DarkGray,
+    onBackground = LightDarkGray,
+    primary = Primary,
+    onPrimary = DarkOnSecondary,
+    secondary = Yellow,
+    onSecondary = DarkTextColor,
+    tertiary = Sky,
+    onTertiary = Color.White,
 )
 
 private val lightColorScheme = AppColorScheme(
     background = Background,
     onBackground = Color.White,
     primary = Primary,
-    onPrimary = Color.Gray,
-    secondary = Secondary,
-    onSecondary = Color.Gray,
-    tertiary = Tertiary
+    onPrimary =  BorderColor,
+    secondary = Yellow,
+    onSecondary = DarkTextColor,
+    tertiary = Sky,
+    onTertiary = DarkGray,
 )
 
 private val typography = AppTypography(
@@ -114,6 +118,7 @@ fun AppTheme(
 ) {
 
     val colorScheme = if (isDarkTheme) darkColorScheme else lightColorScheme
+
     CompositionLocalProvider(
         LocalAppColorScheme provides colorScheme,
         LocalAppTypography provides typography,
@@ -124,7 +129,7 @@ fun AppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = if (isDarkTheme) colorScheme.background.toArgb() else colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars
         }
     }

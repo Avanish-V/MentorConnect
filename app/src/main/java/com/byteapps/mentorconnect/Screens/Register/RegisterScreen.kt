@@ -30,7 +30,7 @@ import com.byteapps.mentorconnect.R
 import com.byteapps.mentorconnect.Utils.Routes
 
 @Composable
-fun SignInScreen(navHostController: NavHostController) {
+fun SignInScreen(navHostController: NavHostController,onSignInClick:()->Unit) {
 
     Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
 
@@ -38,8 +38,9 @@ fun SignInScreen(navHostController: NavHostController) {
             modifier = Modifier.fillMaxSize(),
             painter = painterResource(R.drawable.instructor),
             contentDescription = null,
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.Crop
         )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,7 +65,7 @@ fun SignInScreen(navHostController: NavHostController) {
 
             OutlinedButton(
                 modifier = Modifier.padding(horizontal = 40.dp, vertical = 100.dp).fillMaxWidth().height(52.dp),
-                onClick = { navHostController.navigate(Routes.Register.CreateProfile.routes) },
+                onClick = { onSignInClick.invoke() },
                 border = BorderStroke(width = 1.dp, color = Color.LightGray)
 
             ) {
@@ -79,7 +80,7 @@ fun SignInScreen(navHostController: NavHostController) {
                 }
 
             }
-        }
 
+        }
     }
 }

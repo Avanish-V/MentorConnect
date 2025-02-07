@@ -65,6 +65,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.sp
 import com.byteapps.mentorconnect.ui.theme.AppTheme
 import java.text.SimpleDateFormat
@@ -85,9 +86,15 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                             contentDescription = ""
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = AppTheme.colorScheme.background,
+                    navigationIconContentColor = AppTheme.colorScheme.primary,
+                    titleContentColor = AppTheme.colorScheme.onTertiary
+                )
             )
-        }
+        },
+        containerColor = AppTheme.colorScheme.background
     ) {
 
         Column (modifier = Modifier
@@ -96,7 +103,12 @@ fun CreateBookingScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ){
 
-            Text("Book a mentoring Session", style = AppTheme.typography.titleMedium)
+            Text(
+                text = "Book a mentoring Session",
+                style = AppTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = AppTheme.colorScheme.onTertiary
+            )
 
             Column (
                 modifier = Modifier
@@ -105,7 +117,7 @@ fun CreateBookingScreen(navHostController: NavHostController) {
 
                     .border(
                         width = 1.dp,
-                        color = Color.LightGray,
+                        color = AppTheme.colorScheme.secondary,
                         shape = RoundedCornerShape(12.dp)
                     )
             ){
@@ -113,10 +125,17 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                 Row (modifier = Modifier.padding(13.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)){
                     Image(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.calendar_day),
-                        contentDescription = null
+                        painter = painterResource(R.drawable.booking),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(
+                            color = AppTheme.colorScheme.primary
+                        )
                     )
-                    Text("Select Date")
+                    Text(
+                        text = "Select Date",
+                        style = AppTheme.typography.titleMedium,
+                        color = AppTheme.colorScheme.onTertiary
+                    )
                 }
 
                 LazyRow (contentPadding = PaddingValues(13.dp), horizontalArrangement = Arrangement.spacedBy(13.dp)){
@@ -127,17 +146,24 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                                 .width(60.dp)
                                 .border(
                                     width = 1.dp,
-                                    color = Color.LightGray,
+                                    color = AppTheme.colorScheme.onPrimary,
                                     shape = RoundedCornerShape(8.dp)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Column (verticalArrangement = Arrangement.spacedBy(10.dp), horizontalAlignment = Alignment.CenterHorizontally){
-                                Text(it.day, )
-                                Text(it.dayOfMonth.toString(),style = AppTheme.typography.titleMedium)
+                                Text(
+                                    text = it.day,
+                                    color = AppTheme.colorScheme.onTertiary
+                                )
+                                Text(
+                                    text = it.dayOfMonth.toString(),
+                                    style = AppTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = AppTheme.colorScheme.onTertiary
+                                )
                             }
                         }
-
                     }
                 }
             }
@@ -148,7 +174,7 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = Color.LightGray,
+                        color = AppTheme.colorScheme.onPrimary,
                         shape = RoundedCornerShape(12.dp)
                     )
             ){
@@ -156,10 +182,18 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                 Row (modifier = Modifier.padding(13.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)){
                     Image(
                         modifier = Modifier.size(24.dp),
-                        painter = painterResource(R.drawable.calendar_day),
-                        contentDescription = null
+                        painter = painterResource(R.drawable.time_watch_calendar),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(
+                            color = AppTheme.colorScheme.primary
+                        )
+
                     )
-                    Text("Select Time Slot")
+                    Text(
+                        text = "Select Time Slot",
+                        style = AppTheme.typography.titleMedium,
+                        color = AppTheme.colorScheme.onTertiary
+                    )
                 }
 
                 LazyVerticalGrid(
@@ -174,18 +208,20 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                             modifier = Modifier
                                 .border(
                                     width = 1.dp,
-                                    color = Color.LightGray,
+                                    color = AppTheme.colorScheme.onPrimary,
                                     shape = RoundedCornerShape(8.dp)
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("8:00AM - 9:00AM", modifier = Modifier.padding(13.dp))
+                            Text(
+                                text="8:00AM - 9:00AM",
+                                modifier = Modifier.padding(13.dp),
+                                color = AppTheme.colorScheme.onTertiary
+                            )
                         }
 
                     }
                 }
-
-
             }
 
             Column (
@@ -193,27 +229,31 @@ fun CreateBookingScreen(navHostController: NavHostController) {
                     .fillMaxWidth()
                     .border(
                         width = 1.dp,
-                        color = Color.LightGray,
+                        color = AppTheme.colorScheme.secondary,
                         shape = RoundedCornerShape(12.dp)
                     )
             ){
 
                 Row (modifier = Modifier.padding(13.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)){
-                    Text("Session Details")
+                    Text(
+                        text="Session Details",
+                        style = AppTheme.typography.titleMedium,
+                        color = AppTheme.colorScheme.onTertiary
+                    )
                 }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.weight(1f).padding(13.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("Selected Date & Time")
-                        Text("8 Sunday,\n09:00PM", style = AppTheme.typography.titleMedium)
+                        Text(text = "Selected Date & Time", color = AppTheme.colorScheme.onTertiary)
+                        Text(text = "8 Sunday,\n09:00PM", style = AppTheme.typography.titleMedium, color = AppTheme.colorScheme.onTertiary)
                     }
                     Column (
                         modifier = Modifier.weight(1f).padding(13.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                         horizontalAlignment = Alignment.End
                     ){
-                        Text("Duration")
-                        Text("1 Hour", style = AppTheme.typography.titleMedium)
+                        Text(text = "Duration", color = AppTheme.colorScheme.onTertiary)
+                        Text(text = "1 Hour", style = AppTheme.typography.titleMedium, color = AppTheme.colorScheme.onTertiary)
                     }
                 }
 

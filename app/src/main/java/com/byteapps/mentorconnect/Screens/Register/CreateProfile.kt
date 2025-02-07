@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowBack
@@ -52,11 +53,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.byteapps.mentorconnect.R
+import com.byteapps.mentorconnect.Screens.ServiceProducts.CustomTextField
 import com.byteapps.mentorconnect.Utils.Routes
 import com.byteapps.mentorconnect.ui.theme.AppTheme
 
@@ -77,7 +80,7 @@ fun CreateProfileScreen(navHostController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ){
 
-            Box(modifier = Modifier.padding(top = 40.dp).fillMaxWidth(), contentAlignment = Alignment.CenterStart){
+            Box(modifier = Modifier.padding(top = 30.dp).fillMaxWidth(), contentAlignment = Alignment.CenterStart){
                 Text(
                     text="Create Profile",
                     style = AppTheme.typography.titleLarge,
@@ -98,7 +101,7 @@ fun CreateProfileScreen(navHostController: NavHostController) {
                         .size(180.dp)
                         .clip(CircleShape)
                         .background(
-                            color = Color.White
+                            color = AppTheme.colorScheme.onBackground
                         ).border(
                             width = 1.dp,
                             color = Color.LightGray,
@@ -121,28 +124,16 @@ fun CreateProfileScreen(navHostController: NavHostController) {
                 }
 
 
-                TextField(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                    value = "",
-                    onValueChange = {},
-                    placeholder = {
-                        Text("Your Name")
+                CustomTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = {
+
                     },
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = AppTheme.colorScheme.primary
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null
-                        )
-                    },
-                    trailingIcon = {
-                        Text("😡", color = Color.Red)
-                    }
+                    label = "Your Name",
+                    placeHolder = "Ex-Apna name likh do",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
+
 
             }
 
@@ -150,7 +141,7 @@ fun CreateProfileScreen(navHostController: NavHostController) {
                 onClick = {navHostController.navigate(Routes.Main.routes)},
                 modifier = Modifier.fillMaxWidth().height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = AppTheme.colorScheme.primary
+                    containerColor = if (isSystemInDarkTheme()) AppTheme.colorScheme.primary else AppTheme.colorScheme.primary
                 )
             ) {
                 Text("Create")

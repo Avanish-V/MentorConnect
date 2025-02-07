@@ -1,9 +1,11 @@
 package com.byteapps.mentorconnect.Screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,91 +78,103 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
+import com.byteapps.mentorconnect.Network.UserProfile.presentation.UserProfileViewModel
 import com.byteapps.mentorconnect.R
+import com.byteapps.mentorconnect.UIComponents.FeatureSingleCard
+import com.byteapps.mentorconnect.UIComponents.featureList
 import com.byteapps.mentorconnect.Utils.ExpertDrawerItemsList
 import com.byteapps.mentorconnect.Utils.Routes
 import com.byteapps.mentorconnect.Utils.drawerItemsList
 import com.byteapps.mentorconnect.ui.theme.AppTheme
+import com.byteapps.mentorconnect.ui.theme.DarkOnSecondary
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navHostController: NavHostController) {
+fun MainScreen(
+    navHostController: NavHostController,
+    userProfileViewModel: UserProfileViewModel
+) {
 
     val navigationDrawer = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
+
+    val userProfile = userProfileViewModel.userBaseProfile.collectAsStateWithLifecycle().value.baseProfileData
+
+
     DismissibleNavigationDrawer(
         drawerContent = {
 
-            Column(modifier = Modifier
-                .width(screenWidth.dp / 2)
-                .fillMaxHeight()
-                .background(color = AppTheme.colorScheme.background)){
+            Column(
+                modifier = Modifier
+                    .width(screenWidth.dp / 2)
+                    .fillMaxHeight()
+                    .background(color = AppTheme.colorScheme.background)
+            ) {
 
-                Column (modifier = Modifier
+                Column(
+                    modifier = Modifier
                     .clickable { navHostController.navigate(Routes.Main.Profile.routes) }
-                    .padding(20.dp),verticalArrangement = Arrangement.spacedBy(24.dp)){
-                    Image(
+                    .padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)) {
+
+                    AsyncImage(
+                        model ="https://lh3.googleusercontent.com/a/ACg8ocJon1ABMBMrrHdCb1zR-e_AFHJI_X4zM9V9LdtXhjF6XBhVwbM=s96-c",
                         modifier = Modifier
                             .size(100.dp)
                             .clip(CircleShape),
-                        painter = painterResource(R.drawable.cat),
                         contentDescription = null
                     )
-                    Column (verticalArrangement = Arrangement.spacedBy(10.dp)){
-                        Text("Avanish Kumar", fontWeight = FontWeight.Bold)
-                        Text("akv1042003@gmail.com", maxLines = 1, overflow = TextOverflow.Ellipsis)
+
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+
+                        Text(
+                            "${userProfile?.userName}",
+                            fontWeight = FontWeight.Bold,
+                            color = AppTheme.colorScheme.onTertiary
+                        )
+
+                        Text(
+                            "${userProfile?.userEmail}",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = AppTheme.colorScheme.onTertiary
+                        )
+
                     }
 
                 }
+
                 HorizontalDivider(
                     modifier = Modifier.width(IntrinsicSize.Min)
                 )
-                LazyColumn (contentPadding = PaddingValues(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)){
 
-                    items(drawerItemsList){
+
+                LazyColumn(
+                    contentPadding = PaddingValues(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+
+                    items(drawerItemsList) {
                         NavigationDrawerItem(
-                            label = { Text(text = it.name) },
-                            selected = false,
-                            onClick = {
-
-                                if (it.name == "Become Mentor"){
-                                    navHostController.navigate(Routes.Main.MentorDashboard.MentorForm.routes)
-                                }
-                                if (it.name == "Schedule"){
-                                    navHostController.navigate(Routes.Main.MentorDashboard.CreateSchedule.routes)
-                                }
-                                      },
-                            icon = {
-                                Icon(
-                                    modifier = Modifier.size(24.dp),
-                                    painter = painterResource(it.icon),
-                                    contentDescription = "UserImage",
-                                    tint = AppTheme.colorScheme.primary
+                            label = {
+                                Text(
+                                    text = it.name,
+                                    color = AppTheme.colorScheme.onTertiary
                                 )
                             },
-                            shape = RoundedCornerShape(10.dp),
-                            colors = NavigationDrawerItemDefaults.colors(
-                                unselectedContainerColor = Color.Transparent
-                            ),
-
-                        )
-                    }
-
-                    items(ExpertDrawerItemsList){
-
-                        NavigationDrawerItem(
-                            label = { Text(text = it.name) },
                             selected = false,
                             onClick = {
 
-                                if (it.name == "Become Mentor"){
+                                if (it.name == "Become Mentor") {
                                     navHostController.navigate(Routes.Main.MentorDashboard.MentorForm.routes)
                                 }
-                                if (it.name == "Schedule"){
+                                if (it.name == "Schedule") {
                                     navHostController.navigate(Routes.Main.MentorDashboard.CreateSchedule.routes)
                                 }
                             },
@@ -178,8 +192,78 @@ fun MainScreen(navHostController: NavHostController) {
                             ),
 
                             )
-
                     }
+
+                    if (userProfile?.metaData?.isMentor == true){
+                        item {
+                            Text("Mentor Dashboard")
+                        }
+                        items(ExpertDrawerItemsList) {
+
+                            NavigationDrawerItem(
+                                label = {
+                                    Text(
+                                        text = it.name,
+                                        color = AppTheme.colorScheme.onTertiary
+                                    )
+                                },
+                                selected = false,
+                                onClick = {
+
+                                    if (it.name == "Schedule") {
+                                        navHostController.navigate(Routes.Main.MentorDashboard.CreateSchedule.routes)
+                                    }
+                                    if (it.name == "Products") {
+                                        navHostController.navigate(Routes.Main.ServiceProduct.ServiceProductList.routes)
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        modifier = Modifier.size(24.dp),
+                                        painter = painterResource(it.icon),
+                                        contentDescription = "UserImage",
+                                        tint = AppTheme.colorScheme.primary
+                                    )
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    unselectedContainerColor = Color.Transparent
+                                ),
+                            )
+
+                        }
+                    }
+                    else{
+                        item {
+                            NavigationDrawerItem(
+                                label = {
+                                    Text(
+                                        text = "Become Mentor",
+                                        color = AppTheme.colorScheme.onTertiary
+                                    )
+                                },
+                                selected = false,
+                                onClick = {
+
+                                    navHostController.navigate(Routes.Main.MentorDashboard.MentorForm.routes)
+                                },
+                                icon = {
+                                    Icon(
+                                        modifier = Modifier.size(24.dp),
+                                        painter = painterResource(R.drawable.badge__1_),
+                                        contentDescription = "UserImage",
+                                        tint = AppTheme.colorScheme.primary
+                                    )
+                                },
+                                shape = RoundedCornerShape(10.dp),
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    unselectedContainerColor = Color.Transparent
+                                ),
+
+                                )
+                        }
+                    }
+
 
                 }
             }
@@ -188,32 +272,36 @@ fun MainScreen(navHostController: NavHostController) {
     ) {
 
         val greetString = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)){
+
+            withStyle(style = SpanStyle(color = Color.White, fontWeight = FontWeight.Bold)) {
                 append("Hello, ")
             }
 
-            append("Avanish!")
+            append("${userProfile?.userName}")
 
             toAnnotatedString()
         }
 
-        Scaffold (
+        Scaffold(
             topBar = {
                 TopAppBar(
                     title = {
                         Text(text = greetString)
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = AppTheme.colorScheme.primary,
+                        containerColor = if (isSystemInDarkTheme()) AppTheme.colorScheme.background else AppTheme.colorScheme.primary,
                         titleContentColor = Color.White
                     )
                 )
             },
-            containerColor = Color.White
+            containerColor = AppTheme.colorScheme.background
 
-        ){paddingValues ->
+        ) { paddingValues ->
 
-            LazyColumn(modifier = Modifier.padding(paddingValues), verticalArrangement = Arrangement.spacedBy(32.dp)) {
+            LazyColumn(
+                modifier = Modifier.padding(paddingValues),
+                verticalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
 
                 item {
                     HeroSection(
@@ -225,20 +313,18 @@ fun MainScreen(navHostController: NavHostController) {
                 }
 
                 item {
-
-                }
-
-                item {
-
-
-                    Box(modifier = Modifier.padding(start = 16.dp)){
+                    Box(modifier = Modifier.padding(start = 16.dp)) {
                         Text(
                             text = "Top 10 Expert",
-                            style = AppTheme.typography.titleLarge
+                            style = AppTheme.typography.titleLarge,
+                            color = AppTheme.colorScheme.onTertiary
                         )
                     }
-                    LazyRow (contentPadding = PaddingValues(16.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)){
-                        items(5){
+                    LazyRow(
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(5) {
                             TopMentorsCard(onCardClick = {
                                 navHostController.navigate(Routes.Main.MentorProfile.routes)
                             })
@@ -248,13 +334,17 @@ fun MainScreen(navHostController: NavHostController) {
 
                 item {
 
-                    Column (
+                    Column(
                         modifier = Modifier.padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(24.dp)
-                    ){
+                    ) {
 
-                        Text(text = "Why Choose Our Platform?", style = AppTheme.typography.titleLarge)
+                        Text(
+                            text = "Why Choose Our Platform?",
+                            style = AppTheme.typography.titleLarge,
+                            color = AppTheme.colorScheme.onTertiary
+                        )
 
                         featureList.forEach {
                             FeatureSingleCard(
@@ -263,20 +353,25 @@ fun MainScreen(navHostController: NavHostController) {
                                 icon = it.icon
                             )
                         }
+
                     }
                 }
 
                 item {
-                    Column (
-                        modifier = Modifier.fillMaxWidth().background(
-                            color = AppTheme.colorScheme.primary
-                        ),
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = if (isSystemInDarkTheme()) AppTheme.colorScheme.background else AppTheme.colorScheme.primary
+                            ),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
-                    ){
+                    ) {
 
                         Column(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp, horizontal = 40.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 24.dp, horizontal = 40.dp),
                             verticalArrangement = Arrangement.spacedBy(24.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -294,8 +389,8 @@ fun MainScreen(navHostController: NavHostController) {
                             )
 
                             Button(
-                              onClick = {},
-                              shape = RoundedCornerShape(6.dp),
+                                onClick = {},
+                                shape = RoundedCornerShape(6.dp),
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.White,
                                     contentColor = AppTheme.colorScheme.primary
@@ -314,69 +409,9 @@ fun MainScreen(navHostController: NavHostController) {
     }
 }
 
-val featureList = listOf<FeatureItems>(
-    FeatureItems(
-        title = "Personalized Matching",
-        description = "Our AI-powered algorithm finds the perfect mentor based on your goals, industry, and experience level.",
-        icon = R.drawable.bullseye
-    ),
-    FeatureItems(
-        title = "Flexible Scheduling",
-        description = "Book sessions at your convenience with our easy-to-use scheduling system.",
-        icon = R.drawable.calendar_clock
-    ),
-    FeatureItems(
-        title = "Rich Resources",
-        description = "Access exclusive resources, workshops, and learning materials from industry experts.",
-        icon = R.drawable.book_open_cover
-    ),
-
-)
-data class FeatureItems(
-    val title:String,
-    val description:String,
-    val icon:Int
-)
 
 @Composable
-fun FeatureSingleCard(
-    title: String,
-    description: String,
-    icon: Int,
-) {
-
-    Card (
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        )
-    ){
-        Column(
-            modifier = Modifier.fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            Row (
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ){
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(icon),
-                    contentDescription = null,
-                    tint = AppTheme.colorScheme.primary
-                )
-                Text(title, style = AppTheme.typography.titleMedium)
-            }
-            Text(text = description)
-        }
-
-    }
-
-
-}
-
-@Composable
-fun TopMentorsCard(onCardClick:()->Unit) {
+fun TopMentorsCard(onCardClick: () -> Unit) {
     Card(
         onClick = {
             onCardClick.invoke()
@@ -391,18 +426,20 @@ fun TopMentorsCard(onCardClick:()->Unit) {
                 ambientColor = Color.White,
                 shape = RoundedCornerShape(12.dp)
             ),
-        colors = CardDefaults.cardColors(containerColor = AppTheme.colorScheme.onBackground)
+        colors = CardDefaults.cardColors(
+            containerColor = AppTheme.colorScheme.onBackground
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = "Top Rated",
-                color = Color(0xFFFFD700), // Yellow color
+                color = AppTheme.colorScheme.secondary, // Yellow color
                 fontSize = 12.sp,
                 modifier = Modifier
                     .background(
-                        color = Color(0xFFFFF9C4), // Light yellow background
+                        color = Color(0x51FFF9C4), // Light yellow background
                         shape = RoundedCornerShape(8.dp)
                     )
                     .padding(horizontal = 8.dp, vertical = 4.dp)
@@ -421,7 +458,11 @@ fun TopMentorsCard(onCardClick:()->Unit) {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Column {
-                    Text(text = "John Smith", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "John Smith",
+                        fontWeight = FontWeight.Bold,
+                        color = AppTheme.colorScheme.onTertiary
+                    )
                     Text(text = "Product Lead at Google", fontSize = 12.sp, color = Color.Gray)
                 }
             }
@@ -448,7 +489,7 @@ fun TopMentorsCard(onCardClick:()->Unit) {
                 Text(
                     text = "Helping professionals transition into PM roles and grow their careers.",
                     fontSize = 12.sp,
-                    color = Color.Gray
+                    color = AppTheme.colorScheme.onTertiary
                 )
             }
         }
@@ -465,7 +506,11 @@ fun IconWithText(iconColor: Color, iconText: String) {
             modifier = Modifier.size(16.dp)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = iconText, fontSize = 12.sp)
+        Text(
+            text = iconText,
+            fontSize = 12.sp,
+            color = AppTheme.colorScheme.onTertiary
+        )
     }
 }
 
@@ -474,26 +519,27 @@ fun Chip(text: String) {
     Text(
         text = text,
         fontSize = 12.sp,
-        color = Color.Black,
+        color = AppTheme.colorScheme.onTertiary,
         modifier = Modifier
-            .background(color = AppTheme.colorScheme.background, shape = RoundedCornerShape(16.dp))
+            .background(color = AppTheme.colorScheme.onPrimary, shape = RoundedCornerShape(16.dp))
             .padding(horizontal = 8.dp, vertical = 4.dp),
         textAlign = TextAlign.Center
     )
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeroSection(
-    onSearchClick:()->Unit,
+    onSearchClick: () -> Unit,
     navHostController: NavHostController
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(AppTheme.colorScheme.primary)
+            .background(
+                color = if (isSystemInDarkTheme()) AppTheme.colorScheme.background else AppTheme.colorScheme.primary
+            )
             .padding(16.dp)
     ) {
         Text(
@@ -518,7 +564,7 @@ fun HeroSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
-            onClick = {onSearchClick.invoke()},
+            onClick = { onSearchClick.invoke() },
             colors = CardDefaults.elevatedCardColors(
                 containerColor = Color.White
             ),
@@ -526,11 +572,11 @@ fun HeroSection(
                 defaultElevation = 5.dp
             )
         ) {
-            Row (
+            Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ){
+            ) {
                 Icon(
                     modifier = Modifier.size(24.dp),
                     painter = painterResource(R.drawable.search),

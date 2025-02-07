@@ -74,7 +74,7 @@ fun SearchScreen(navHostController: NavHostController) {
                         placeholder = {
                             Text(
                                 text = "Enter Mentor Name",
-                                color = AppTheme.colorScheme.tertiary
+                                color = AppTheme.colorScheme.onTertiary
                             )
                         },
                         textStyle = TextStyle(
@@ -96,10 +96,6 @@ fun SearchScreen(navHostController: NavHostController) {
             onExpandedChange = {
 
             },
-            modifier = Modifier.border(
-                width = 2.dp,
-                color = AppTheme.colorScheme.secondary
-            ),
             shape = RoundedCornerShape(10.dp),
             colors = SearchBarDefaults.colors(
                 containerColor = AppTheme.colorScheme.background
@@ -137,7 +133,7 @@ fun MentorSingleCard(onClick:()->Unit) {
         Column (
             modifier = Modifier
                 .background(
-                    color = Color.White,
+                    color = AppTheme.colorScheme.onBackground,
                     shape = RoundedCornerShape(10.dp)
                 ).padding(
                     13.dp
@@ -153,13 +149,24 @@ fun MentorSingleCard(onClick:()->Unit) {
                 )
 
                 Column (verticalArrangement = Arrangement.spacedBy(6.dp)){
-                    Text("Nishant Chahar", style = AppTheme.typography.titleMedium)
-                    Text("SDE at Microsoft", color = Color.Gray)
+                    Text(
+                        "Nishant Chahar",
+                        style = AppTheme.typography.titleMedium,
+                        color = AppTheme.colorScheme.onTertiary
+
+                    )
+                    Text(
+                        "SDE at Microsoft",
+                        color = AppTheme.colorScheme.onSecondary
+                    )
                 }
 
             }
 
-            Text("Building @Tayyari | Ex-Microsoft | 400k+ Subs on YT | NSIT")
+            Text(
+                text = "Building @Tayyari | Ex-Microsoft | 400k+ Subs on YT | NSIT",
+                color = AppTheme.colorScheme.onTertiary
+            )
 
         }
 
